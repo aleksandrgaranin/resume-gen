@@ -1,6 +1,12 @@
 from django.shortcuts import render,redirect
 from .models import Profile
 from django.contrib import messages
+import pdfkit
+from django.http import HttpResponse
+from django.template import loader
+import io
+
+
 
 # Create your views here.
 def index(request):
@@ -28,6 +34,17 @@ def accept(request):
     return render(request, 'pdf_generator/accept.html') 
 
 def resume(request,id):
-    user_profile = Profile.objects.get(id=id)
+    user_profile = Profile.objects.get(pk=id)
+    template = loader.get_template('pdf_generator/resume.html')
+    html = template.render({'user_profile':user_profile})
+    options = {
+        'page-size':'Letter',
+        'encoding':"UTF-8",
+    }
 
-    return render(request, 'pdf_generator/resume.html',{'user_profile':user_profile})
+    pdf = pdfkit.from_string(html,False,options)
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment'
+    filename = "resume.pdf"
+
+    return response
