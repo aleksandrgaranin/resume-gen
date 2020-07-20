@@ -1,0 +1,19 @@
+{% extends 'pdf_generator/base.html'%}
+
+{% block body %}
+    
+        <body>
+            {% for profile in profile_objects%}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-name">
+                                {{profile.name}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </body>
+
+{% endblock %}
